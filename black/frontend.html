@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Encryption/Decryption Tool</title>
+    <style>
+        /* Add your CSS styles here */
+    </style>
+</head>
+<body>
+    <h1>Encryption/Decryption Tool</h1>
+    <label for="key">Encryption Key:</label>
+    <input type="text" id="key"><br>
+    <label for="message">Message:</label>
+    <textarea id="message"></textarea><br>
+    <button onclick="encrypt()">Encrypt</button>
+    <button onclick="decrypt()">Decrypt</button><br>
+    <label id="result"></label>
+
+    <script>
+        function encrypt() {
+            var key = document.getElementById('key').value;
+            var message = document.getElementById('message').value;
+
+            fetch('/encrypt', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: 'key=' + encodeURIComponent(key) + '&message=' + encodeURIComponent(message)
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('result').innerText = "Encrypted Message: " + data.encrypted_message;
+            });
+        }
+
+        function decrypt() {
+            var key = document.getElementById('key').value;
+            var encrypted_message = document.getElementById('message').value;
+
+            fetch('/decrypt', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: 'key=' + encodeURIComponent(key) + '&encrypted_message=' + encodeURIComponent(encrypted_message)
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('result').innerText = "Decrypted Message: " + data.decrypted_message;
+            });
+        }
+    </script>
+</body>
+</html>
